@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datadog APM Lab - Gateway Portal</title>
+    <meta name="description" content="Entry portal for testing distributed tracing via API Gateway">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="background-elements">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <main class="glass-container">
+        <header>
+            <h1>Observability Portal</h1>
+            <p>Spring Boot 4.1 + OpenTelemetry + Datadog</p>
+        </header>
+
+        <section class="card">
+            <h2>Authentication Test</h2>
+            <p class="subtitle">Triggers a cross-service trace: Gateway → Auth Service → User Profile</p>
+            
+            <form id="loginForm" class="form-layout">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" value="testuser" required autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" value="password123" required>
+                </div>
+                <button type="submit" class="btn primary-btn">
+                    <span class="btn-text">Execute Login Flow</span>
+                    <div class="spinner hidden" id="loginSpinner"></div>
+                </button>
+            </form>
+        </section>
+
+        <section class="card result-card">
+            <h2>Trace Result</h2>
+            <div id="resultBox" class="terminal-box">
+                <span class="placeholder-text">Awaiting execution...</span>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

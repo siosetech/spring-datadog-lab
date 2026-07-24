@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: spring-datadog-lab
+
+resources:
+  - ../../base
+  # OTel Collector + Jaeger v2 (dual-export to Datadog + Jaeger UI)
+  # Apps use Spring Cloud Vault directly; OTel still needs datadog-k8s-secret (see deploy/scripts/k8s).
+  - ../../../otel/jaeger.yaml
+  - ../../../otel/otel-collector.yaml

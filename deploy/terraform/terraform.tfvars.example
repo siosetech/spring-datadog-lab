@@ -1,0 +1,71 @@
+# Rename this file to terraform.tfvars and fill in your values
+# DO NOT commit terraform.tfvars to version control
+
+# ============================================================================
+# GITHUB CONFIGURATION (for managing repository settings as IaC)
+# ============================================================================
+
+# GitHub personal access token (create at https://github.com/settings/tokens)
+# Required scopes: repo, admin:repo_hook, admin:org (for env approvals)
+# For production: Use GitHub App token instead of personal token
+github_token   = "ghp_your_personal_access_token_here"
+github_owner   = "your-github-username-or-org"
+github_owner_full = "your-github-username-or-org/spring-datadog-lab"  # Format: owner/repo (used for JWT claims)
+github_repo    = "spring-datadog-lab"
+github_branch  = "main"
+
+# Branch protection settings
+require_branch_reviews = 1
+
+# ============================================================================
+# VAULT CONFIGURATION (for Datadog & Terraform Cloud API tokens)
+# ============================================================================
+
+vault_address          = "http://localhost:8200"
+vault_token            = "root"                    # Use VAULT_TOKEN env var in production
+vault_skip_tls_verify  = true                      # Set to false in production
+vault_secret_path      = "secret/datadog"          # Path where Datadog API keys are stored
+vault_terraform_cloud_path = "secret/terraform-cloud"  # Path where TF Cloud token is stored
+vault_jwt_audience     = "sigstore"                # GitHub OIDC JWT audience (standard)
+
+# Production Vault settings (optional - leave empty to use defaults above)
+vault_address_prod = ""
+vault_token_prod   = ""
+
+# ============================================================================
+# DATADOG CONFIGURATION
+# ============================================================================
+
+datadog_api_url = "https://api.datadoghq.com" # or "https://api.datadoghq.eu" for EU
+
+# ============================================================================
+# TERRAFORM CLOUD CONFIGURATION (OPTIONAL - for remote state backup)
+# ============================================================================
+
+terraform_cloud_enabled = false                # Set to true to enable remote state
+terraform_cloud_org     = "your-org"          # Your Terraform Cloud organization
+terraform_cloud_workspace = "spring-datadog-lab"  # Workspace name
+
+# ============================================================================
+# GITHUB ACTIONS SECRETS (optional - leave empty to skip)
+# ============================================================================
+
+# Kubernetes config (base64 encoded) - for K8s deployment
+kubeconfig = ""
+
+# Slack webhook URL - for notifications
+slack_webhook = ""
+
+# ============================================================================
+# DEPLOYMENT CONFIGURATION
+# ============================================================================
+
+environment  = "dev"
+project_name = "spring-datadog-lab"
+k8s_namespace = "spring-datadog-lab"  # Kubernetes namespace for microservices
+
+# Optional: Add notification channels
+notification_channels = [
+  # "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+  # "pagerduty@example.com"
+]

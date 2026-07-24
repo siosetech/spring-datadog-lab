@@ -1,0 +1,44 @@
+#!/bin/sh
+
+SKAFFOLD_VERSION="v2.12.0"
+SKAFFOLD_DIR="$(dirname "$0")/.skaffold"
+
+# Determine OS and Architecture
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+if [ "$ARCH" = "x86_64" ]; then
+    ARCH="amd64"
+elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then
+    ARCH="arm64"
+else
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+fi
+
+SKAFFOLD_URL="https://github.com/GoogleContainerTools/skaffold/releases/download/${SKAFFOLD_VERSION}/skaffold-${OS}-${ARCH}"
+SKAFFOLD_EXE="${SKAFFOLD_DIR}/skaffold"
+
+if [ ! -d "$SKAFFOLD_DIR" ]; then
+    mkdir -p "$SKAFFOLD_DIR"
+fi
+
+if [ ! -x "$SKAFFOLD_EXE" ]; then
+    echo "Downloading Skaffold ${SKAFFOLD_VERSION} for ${OS}-${ARCH}..."
+    if command -v curl >/dev/null 2>&1; then
+        curl -Lo "$SKAFFOLD_EXE" "$SKAFFOLD_URL"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -O "$SKAFFOLD_EXE" "$SKAFFOLD_URL"
+    else
+        echo "Error: curl or wget is required to download skaffold."
+        exit 1
+    fi
+    chmod +x "$SKAFFOLD_EXE"
+    echo "Download complete!"
+fi
+
+if [ "$1" = "install" ]; then
+    exit 0
+fi
+
+exec "$SKAFFOLD_EXE" "$@"

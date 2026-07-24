@@ -1,0 +1,83 @@
+apiVersion: skaffold/v4beta9
+kind: Config
+metadata:
+  name: spring-datadog-lab
+build:
+  local:
+    push: false
+  artifacts:
+    - image: spring-datadog-lab/api-gateway
+      context: api-gateway
+      docker:
+        dockerfile: Dockerfile
+    - image: spring-datadog-lab/auth-service
+      context: auth-service
+      docker:
+        dockerfile: Dockerfile
+    - image: spring-datadog-lab/user-profile-service
+      context: user-profile-service
+      docker:
+        dockerfile: Dockerfile
+    - image: spring-datadog-lab/audit-log-service
+      context: audit-log-service
+      docker:
+        dockerfile: Dockerfile
+    - image: spring-datadog-lab/dashboard-service
+      context: dashboard-service
+      docker:
+        dockerfile: Dockerfile
+    - image: spring-datadog-lab/notification-service
+      context: notification-service
+      docker:
+        dockerfile: Dockerfile
+deploy:
+  helm:
+    releases:
+      - name: api-gateway
+        chartPath: deploy/k8s/helm/spring-microservice
+        namespace: spring-datadog-lab
+        valuesFiles:
+          - deploy/k8s/kustomize/overlays/dev/values/api-gateway.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_spring_datadog_lab_api_gateway}}"
+          image.tag: "{{.IMAGE_TAG_spring_datadog_lab_api_gateway}}"
+      - name: auth-service
+        chartPath: deploy/k8s/helm/spring-microservice
+        namespace: spring-datadog-lab
+        valuesFiles:
+          - deploy/k8s/kustomize/overlays/dev/values/auth-service.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_spring_datadog_lab_auth_service}}"
+          image.tag: "{{.IMAGE_TAG_spring_datadog_lab_auth_service}}"
+      - name: user-profile-service
+        chartPath: deploy/k8s/helm/spring-microservice
+        namespace: spring-datadog-lab
+        valuesFiles:
+          - deploy/k8s/kustomize/overlays/dev/values/user-profile-service.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_spring_datadog_lab_user_profile_service}}"
+          image.tag: "{{.IMAGE_TAG_spring_datadog_lab_user_profile_service}}"
+      - name: audit-log-service
+        chartPath: deploy/k8s/helm/spring-microservice
+        namespace: spring-datadog-lab
+        valuesFiles:
+          - deploy/k8s/kustomize/overlays/dev/values/audit-log-service.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_spring_datadog_lab_audit_log_service}}"
+          image.tag: "{{.IMAGE_TAG_spring_datadog_lab_audit_log_service}}"
+      - name: dashboard-service
+        chartPath: deploy/k8s/helm/spring-microservice
+        namespace: spring-datadog-lab
+        valuesFiles:
+          - deploy/k8s/kustomize/overlays/dev/values/dashboard-service.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_spring_datadog_lab_dashboard_service}}"
+          image.tag: "{{.IMAGE_TAG_spring_datadog_lab_dashboard_service}}"
+      - name: notification-service
+        chartPath: deploy/k8s/helm/spring-microservice
+        namespace: spring-datadog-lab
+        valuesFiles:
+          - deploy/k8s/kustomize/overlays/dev/values/notification-service.yaml
+        setValueTemplates:
+          image.repository: "{{.IMAGE_REPO_spring_datadog_lab_notification_service}}"
+          image.tag: "{{.IMAGE_TAG_spring_datadog_lab_notification_service}}"

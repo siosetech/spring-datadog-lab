@@ -1,0 +1,19 @@
+fullnameOverride: audit-log-service
+replicaCount: 1
+image:
+  repository: spring-datadog-lab/audit-log-service
+  tag: 1.0.0-SNAPSHOT
+service:
+  port: 8083
+env:
+  SPRING_PROFILES_ACTIVE: "dev"
+  SERVER_PORT: "8083"
+  SPRING_CLOUD_VAULT_URI: "http://vault.spring-datadog-lab.svc.cluster.local:8200"
+  SPRING_CLOUD_VAULT_TOKEN: "root"
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "kafka-kafka-bootstrap:9092"
+  DB_JDBC_URL: "jdbc:postgresql://postgresql:5432/datadog_lab_db"
+  DB_USERNAME: "audit"
+  DB_PASSWORD: "audit"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: "http://otel-collector:4318/v1/metrics"
+envFrom: []

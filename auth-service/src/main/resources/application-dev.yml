@@ -1,0 +1,16 @@
+spring:
+  config:
+    import: optional:vault://
+  cloud:
+    vault:
+      enabled: true
+      uri: http://127.0.0.1:9200
+      token: root
+      fail-fast: false
+      kv:
+        enabled: true
+        backend: secret
+        default-context: auth-service
+  datasource:
+    username: ${DB_USERNAME:lab}
+    password: ${DB_PASSWORD:lab}

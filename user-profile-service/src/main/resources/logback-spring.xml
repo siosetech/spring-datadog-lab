@@ -1,0 +1,42 @@
+<configuration>
+    <springProperty name="APP_NAME" source="spring.application.name" defaultValue="unknown"/>
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <fieldName>timestamp</fieldName>
+                    <pattern>yyyy-MM-dd'T'HH:mm:ss.SSSZ</pattern>
+                </timestamp>
+                <logLevel/>
+                <loggerName>
+                    <fieldName>logger</fieldName>
+                </loggerName>
+                <message/>
+                <threadName>
+                    <fieldName>thread</fieldName>
+                </threadName>
+                <stackTrace>
+                    <fieldName>error.stack_trace</fieldName>
+                </stackTrace>
+                <!-- OTel trace correlation -->
+                <mdc/>
+                <keyValuePairs/>
+                <!-- Service metadata -->
+                <pattern>
+                    <pattern>
+                        {
+                          "service": "${APP_NAME}",
+                          "dd.trace_id": "%mdc{trace_id}",
+                          "dd.span_id": "%mdc{span_id}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="JSON_CONSOLE"/>
+    </root>
+</configuration>

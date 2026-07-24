@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: user-profile-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    vault:
+      enabled: false
+  threads:
+    virtual:
+      enabled: true
+  kafka:
+    template:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9192}
+    consumer:
+      group-id: user-profile-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "tech.sioseforge.profile.event,tech.sioseforge.auth.event"
+
+server:
+  port: ${SERVER_PORT:9082}
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  health:
+    vault:
+      enabled: false
+  metrics:
+    tags:
+      env: dev
+      service: ${spring.application.name}
+      version: 1.0.0
+  otlp:
+    metrics:
+      export:
+        url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:http://localhost:9318/v1/metrics}
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:9318/v1/traces}
+    resource-attributes:
+      deployment.environment: dev
+      service.name: ${spring.application.name}
+      service.version: 1.0.0

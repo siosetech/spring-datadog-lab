@@ -1,0 +1,11 @@
+global:
+  postgresql:
+    auth:
+      postgresPassword: "postgrespassword"
+      username: "dbuser"
+      password: "dbpassword"
+      database: "auditdb"
+
+primary:
+  persistence:
+    enabled: false

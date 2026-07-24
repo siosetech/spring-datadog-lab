@@ -1,0 +1,94 @@
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  cloud:
+    vault:
+      enabled: false
+
+  # ── Virtual Threads ──────────────────────────────────────────────────
+  threads:
+    virtual:
+      enabled: true
+
+  # ── Datasource (overridden per profile / env vars) ──────────────────
+  datasource:
+    url: ${DB_JDBC_URL:jdbc:postgresql://localhost:9543/auth_service}
+    username: ${DB_USERNAME:lab}
+    password: ${DB_PASSWORD:lab}
+    driver-class-name: org.postgresql.Driver
+
+  # ── JPA ─────────────────────────────────────────────────────────────
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+  # ── Flyway ──────────────────────────────────────────────────────────
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    baseline-on-migrate: true
+
+  # ── Kafka ───────────────────────────────────────────────────────────
+  kafka:
+    template:
+      observation-enabled: true
+    listener:
+      observation-enabled: true
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9192}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: auth-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "tech.sioseforge.*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: tech.sioseforge.auth.event.UserRegisteredEvent
+
+server:
+  # 9180 avoids FleetForge 8080 and Windows NahimicService on 9080
+  port: ${SERVER_PORT:9180}
+services:
+  user-profile:
+    url: ${USER_PROFILE_URL:http://localhost:9082}
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:local-dev-jwt-secret-min-32-chars!!}
+    admin-users: ${ADMIN_USERS:}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  health:
+    vault:
+      enabled: false
+  metrics:
+    tags:
+      env: dev
+      service: ${spring.application.name}
+      version: 1.0.0
+  otlp:
+    metrics:
+      export:
+        url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:http://localhost:9318/v1/metrics}
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:9318/v1/traces}
+    resource-attributes:
+      deployment.environment: dev
+      service.name: ${spring.application.name}
+      service.version: 1.0.0
+
